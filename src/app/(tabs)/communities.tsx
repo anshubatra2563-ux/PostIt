@@ -1,0 +1,8 @@
+import { View, Text } from "react-native"
+export default function CommunitiesScreen() {
+    return (
+        <View>
+            <Text>Communiites Screen</Text>
+        </View>
+    )
+}
