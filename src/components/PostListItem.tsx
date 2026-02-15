@@ -1,14 +1,19 @@
-import { View, Text, Image, StyleSheet } from "react-native"
+import { View, Text, Image, StyleSheet,  } from "react-native"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { formatDistanceToNowStrict } from "date-fns"
 import posts from "../../assets/data/posts.json"
 import { Post } from "../types"
+import { Link } from "expo-router"
 
 type PostListProps = {
-    post: Post
+    post: Post,
+    isDetailedPost? : boolean;
 }
-export default function PostListItem({ post }: PostListProps) {
+export default function PostListItem({ post, isDetailedPost }: PostListProps) {
+    const shouldShowImage  = isDetailedPost || post.image
+    const shouldShowDescription  = isDetailedPost || !post.image
     return (
+    <Link href={`/post/${post.id}`}>
         <View style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
             <View style={{ flexDirection: "row", gap: 10 }}>
                 <Image source={{ uri: post.group.image }} style={styles.image} />
@@ -18,13 +23,14 @@ export default function PostListItem({ post }: PostListProps) {
                     <Text style={styles.joinButttonText}>Join</Text>
                 </View>
             </View>
+            {isDetailedPost && <Text style={{ fontSize: 13, color: '#2E5DAA' }}>{post.user.name}</Text>}
             <View>
                 <Text style={styles.title}>{post.title}</Text>
-                {post.image && (
+                {shouldShowImage && post.image && (
                     <Image source={{ uri: post.image }} style={{ width: "100%", aspectRatio: 4 / 3, borderRadius: 15 }} />
                 )}
-                {!post.image && post.description && (
-                    <Text numberOfLines={4}>{post.description}</Text>
+                {shouldShowDescription && post.description && (
+                    <Text numberOfLines={isDetailedPost ? undefined : 4}>{post.description}</Text>
                 )}
             </View>
 
@@ -47,6 +53,7 @@ export default function PostListItem({ post }: PostListProps) {
                 </View>
             </View>
         </View>
+    </Link>
     )
 }
 
