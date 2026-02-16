@@ -4,10 +4,18 @@ import { AntDesign } from "@expo/vector-icons"
 import { router } from "expo-router"
 import { useState } from "react"
 import groups from "../../../assets/data/groups.json"
+import { selectedGroupAtom } from "../../atoms"
+import { useSetAtom } from "jotai"
+import { Group } from "../../types"
 
 
 export default function GroupSelector() {
     const [searchValue, setSearchValue] = useState<string>("")
+    const setGroup = useSetAtom(selectedGroupAtom)
+    const onGroupSelected = (group: Group) => {
+        setGroup(group)
+        router.back()
+    }
     
     const filterGroups = groups.filter((group) => group.name.toLowerCase().includes(searchValue.toLowerCase()))
     return <SafeAreaView style={{ marginHorizontal: 10 , flex:1}}>
@@ -33,7 +41,10 @@ export default function GroupSelector() {
         <FlatList  
             data={filterGroups}
             renderItem={({ item }) => (
-                <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 20}}>
+                <Pressable
+                    onPress={() => onGroupSelected(item)}
+                    style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 20}}
+                >
                     <Image source={{ uri: item.image}} style={{ width: 40, aspectRatio: 1, borderRadius: 20 }} />
                     <Text style={{ fontWeight: "600"}}>{item.name}</Text>
                 </Pressable>
